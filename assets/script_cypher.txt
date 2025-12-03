@@ -1,0 +1,195 @@
+// CONSTRAINTS
+
+CREATE CONSTRAINT user_id_unique IF NOT EXISTS
+FOR (u:User)
+REQUIRE u.id IS UNIQUE;
+
+CREATE CONSTRAINT movie_id_unique IF NOT EXISTS
+FOR (m:Movie)
+REQUIRE m.movieId IS UNIQUE;
+
+CREATE CONSTRAINT serie_id_unique IF NOT EXISTS
+FOR (s:Serie)
+REQUIRE s.serieId IS UNIQUE;
+
+CREATE CONSTRAINT actor_id_unique IF NOT EXISTS
+FOR (a:Actor)
+REQUIRE a.actorId IS UNIQUE;
+
+CREATE CONSTRAINT director_id_unique IF NOT EXISTS
+FOR (d:Director)
+REQUIRE d.directorId IS UNIQUE;
+
+CREATE CONSTRAINT genre_id_unique IF NOT EXISTS
+FOR (g:Genre)
+REQUIRE g.name IS UNIQUE;
+
+// NÓS
+CREATE (:Genre {name: "Action"});
+CREATE (:Genre {name: "Drama"});
+CREATE (:Genre {name: "Comedy"});
+CREATE (:Genre {name: "Sci-Fi"});
+CREATE (:Genre {name: "Thriller"});
+
+CREATE (:Actor {actorId:"A1", name:"Leonardo DiCaprio"});
+CREATE (:Actor {actorId:"A2", name:"Keanu Reeves"});
+CREATE (:Actor {actorId:"A3", name:"Scarlett Johansson"});
+CREATE (:Actor {actorId:"A4", name:"Robert Downey Jr."});
+CREATE (:Actor {actorId:"A5", name:"Tom Hanks"});
+CREATE (:Actor {actorId:"A6", name:"Natalie Portman"});
+CREATE (:Actor {actorId:"A7", name:"Brad Pitt"});
+CREATE (:Actor {actorId:"A8", name:"Ana de Armas"});
+CREATE (:Actor {actorId:"A9", name:"Chris Hemsworth"});
+CREATE (:Actor {actorId:"A10", name:"Zendaya"});
+
+CREATE (:Movie {movieId:"M1", title:"Inception", year:2010});Ação
+CREATE (:Movie {movieId:"M2", title:"Avatar", year:2009});Ficção
+CREATE (:Movie {movieId:"M3", title:"Titanic", year:1997});drama
+CREATE (:Movie {movieId:"M4", title:"The Matrix", year:1999});Ficção
+CREATE (:Movie {movieId:"M5", title:"Iron Man", year:2008});Ação
+CREATE (:Movie {movieId:"M6", title:"The Wolf of Wall Street", year:2013});comédia
+CREATE (:Movie {movieId:"M7", title:"The Avengers", year:2012});Ação
+CREATE (:Movie {movieId:"M8", title:"Black Widow", year:2021});Ação
+CREATE (:Movie {movieId:"M9", title:"Oppenheimer", year:2023});Ficção
+CREATE (:Movie {movieId:"M10", title:"Wonder Woman", year:2017});Ação
+
+CREATE (:Serie {serieId:"S1", title:"Stranger Things", season:4});
+CREATE (:Serie {serieId:"S2", title:"Breaking Bad", season:5});
+CREATE (:Serie {serieId:"S3", title:"The Witcher", season:3});
+CREATE (:Serie {serieId:"S4", title:"The Mandalorian", season:3});
+CREATE (:Serie {serieId:"S5", title:"Loki", season:2});
+CREATE (:Serie {serieId:"S6", title:"Dark", season:3});
+CREATE (:Serie {serieId:"S7", title:"Peaky Blinders", season:6});
+CREATE (:Serie {serieId:"S8", title:"The Boys", season:4});
+CREATE (:Serie {serieId:"S9", title:"WandaVision", season:1});
+CREATE (:Serie {serieId:"S10", title:"House of the Dragon", season:2});
+
+CREATE (:User {id:"U1", name:"Alice"});
+CREATE (:User {id:"U2", name:"Bruno"});
+CREATE (:User {id:"U3", name:"Carla"});
+CREATE (:User {id:"U4", name:"Daniel"});
+CREATE (:User {id:"U5", name:"Eduardo"});
+CREATE (:User {id:"U6", name:"Fernanda"});
+CREATE (:User {id:"U7", name:"Gustavo"});
+CREATE (:User {id:"U8", name:"Helena"});
+CREATE (:User {id:"U9", name:"Igor"});
+CREATE (:User {id:"U10", name:"Julia"});
+
+
+// RELACIONAMENTOS
+
+MATCH (m:Movie),(g:Genre)
+WHERE m.movieId IN ["M1", "M5", "M7", "M8", "M10"] AND g.name="Action"
+CREATE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie),(g:Genre)
+WHERE m.movieId IN ["M2", "M4"] AND g.name="Sci-fi"
+CREATE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie),(g:Genre)
+WHERE m.movieId IN ["M3"] AND g.name="Drama"
+CREATE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie),(g:Genre)
+WHERE m.movieId IN ["M6"] AND g.name="Comedy"
+CREATE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie),(g:Genre)
+WHERE m.movieId IN ["M9"] AND g.name="Thriller"
+CREATE (m)-[:IN_GENRE]->(g);
+---
+
+MATCH (s:Serie),(g:Genre)
+WHERE s.serieId IN ["S4","S5"] AND g.name="Sci-Fi"
+CREATE (s)-[:IN_GENRE]->(g);
+
+MATCH (s:Serie),(g:Genre)
+WHERE s.serieId IN ["S1","S6","S10"] AND g.name="Thriller"
+CREATE (s)-[:IN_GENRE]->(g);
+
+MATCH (s:Serie),(g:Genre)
+WHERE s.serieId IN ["S4","S8"] AND g.name="Action"
+CREATE (s)-[:IN_GENRE]->(g);
+
+MATCH (s:Serie),(g:Genre)
+WHERE s.serieId IN ["S2","S7"] AND g.name="Drama"
+CREATE (s)-[:IN_GENRE]->(g);
+
+MATCH (s:Serie),(g:Genre)
+WHERE s.serieId IN ["S9"] AND g.name="Comedy"
+CREATE (s)-[:IN_GENRE]->(g);
+---
+
+MATCH (a:Actor),(m:Movie) WHERE a.actorId="A1" AND m.movieId="M1" CREATE (a)-[:ACTED_IN]->(m);
+MATCH (a:Actor),(m:Movie) WHERE a.actorId="A2" AND m.movieId="M4" CREATE (a)-[:ACTED_IN]->(m);
+MATCH (a:Actor),(m:Movie) WHERE a.actorId="A3" AND m.movieId="M8" CREATE (a)-[:ACTED_IN]->(m);
+MATCH (a:Actor),(m:Movie) WHERE a.actorId="A4" AND m.movieId="M5" CREATE (a)-[:ACTED_IN]->(m);
+MATCH (a:Actor),(m:Movie) WHERE a.actorId="A5" AND m.movieId="M3" CREATE (a)-[:ACTED_IN]->(m);
+MATCH (a:Actor),(m:Movie) WHERE a.actorId="A8" AND m.movieId="M9" CREATE (a)-[:ACTED_IN]->(m);
+MATCH (a:Actor),(s:Serie) WHERE a.actorId="A10" AND s.serieId="S1" CREATE (a)-[:ACTED_IN]->(s);
+MATCH (a:Actor),(s:Serie) WHERE a.actorId="A9" AND s.serieId="S5" CREATE (a)-[:ACTED_IN]->(s);
+MATCH (a:Actor),(s:Serie) WHERE a.actorId="A7" AND s.serieId="S7" CREATE (a)-[:ACTED_IN]->(s);
+MATCH (a:Actor),(s:Serie) WHERE a.actorId="A6" AND s.serieId="S4" CREATE (a)-[:ACTED_IN]->(s);
+---
+
+MATCH (d:Director),(m:Movie)
+WHERE d.directorId="D1" AND m.movieId="M1"
+CREATE (d)-[:DIRECTED]->(m);
+
+MATCH (d:Director),(m:Movie)
+WHERE d.directorId="D4" AND m.movieId="M2"
+CREATE (d)-[:DIRECTED]->(m);
+
+MATCH (d:Director),(m:Movie)
+WHERE d.directorId="D2" AND m.movieId="M3"
+CREATE (d)-[:DIRECTED]->(m);
+
+MATCH (d:Director),(m:Movie)
+WHERE d.directorId="D5" AND m.movieId="M10"
+CREATE (d)-[:DIRECTED]->(m);
+
+MATCH (d:Director),(s:Serie)
+WHERE d.directorId="D3" AND s.serieId="S7"
+CREATE (d)-[:DIRECTED]->(s);
+---
+
+MATCH (u:User),(m:Movie) 
+WHERE u.id="U1" AND m.movieId="M1" 
+CREATE (u)-[:WATCHED {rating:9}]->(m);
+
+MATCH (u:User),(m:Movie) 
+WHERE u.id="U2" AND m.movieId="M4" 
+CREATE (u)-[:WATCHED {rating:8}]->(m);
+
+MATCH (u:User),(s:Serie) 
+WHERE u.id="U3" AND s.serieId="S1" 
+CREATE (u)-[:WATCHED {rating:10}]->(s);
+
+MATCH (u:User),(s:Serie) 
+WHERE u.id="U4" AND s.serieId="S2" 
+CREATE (u)-[:WATCHED {rating:7}]->(s);
+
+MATCH (u:User),(m:Movie) 
+WHERE u.id="U5" AND m.movieId="M3" 
+CREATE (u)-[:WATCHED {rating:9}]->(m);
+
+MATCH (u:User),(m:Movie) 
+WHERE u.id="U6" AND m.movieId="M7" 
+CREATE (u)-[:WATCHED {rating:8}]->(m);
+
+MATCH (u:User),(s:Serie) 
+WHERE u.id="U7" AND s.serieId="S5" 
+CREATE (u)-[:WATCHED {rating:9}]->(s);
+
+MATCH (u:User),(m:Movie) 
+WHERE u.id="U8" AND m.movieId="M9" 
+CREATE (u)-[:WATCHED {rating:10}]->(m);
+
+MATCH (u:User),(m:Movie) 
+WHERE u.id="U9" AND m.movieId="M10" 
+CREATE (u)-[:WATCHED {rating:7}]->(m);
+
+MATCH (u:User),(s:Serie) 
+WHERE u.id="U10" AND s.serieId="S3" 
+CREATE (u)-[:WATCHED {rating:8}]->(s);
+
